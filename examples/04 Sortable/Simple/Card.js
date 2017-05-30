@@ -87,12 +87,54 @@ export default class Card extends Component {
   };
 
   render() {
-    const { text, isDragging, connectDragSource, connectDropTarget } = this.props;
+    const { text, isDragging, connectDragSource, connectDropTarget, flag, subText } = this.props;
     const opacity = isDragging ? 0 : 1;
 
+    let child = null;
+    if (flag) {
+      child = <div style={{fontSize: "10px"}}>{text} {subText}</div>;
+    } else {
+      child = <div style={{fontSize: "20px"}}>{text}</div>;
+    }
     return connectDragSource(connectDropTarget(
       <div style={{ ...style, opacity }}>
-        {text}
+        {child}
+      </div>,
+    ));
+  }
+}
+
+@DropTarget(ItemTypes.CARD, cardTarget, connect => ({
+  connectDropTarget: connect.dropTarget(),
+}))
+@DragSource(ItemTypes.CARD, cardSource, (connect, monitor) => ({
+  connectDragSource: connect.dragSource(),
+  isDragging: monitor.isDragging(),
+}))
+export class Card2 extends Component {
+  static propTypes = {
+    connectDragSource: PropTypes.func.isRequired,
+    connectDropTarget: PropTypes.func.isRequired,
+    index: PropTypes.number.isRequired,
+    isDragging: PropTypes.bool.isRequired,
+    id: PropTypes.any.isRequired,
+    text: PropTypes.string.isRequired,
+    moveCard: PropTypes.func.isRequired,
+  };
+
+  render() {
+    const { text, isDragging, connectDragSource, connectDropTarget, flag, subText } = this.props;
+    const opacity = isDragging ? 0 : 1;
+
+    let child = null;
+    if (flag) {
+      child = <h1 style={{fontSize: "10px"}}>{text} {subText}</h1>;
+    } else {
+      child = <h1 style={{fontSize: "20px"}}>{text}</h1>;
+    }
+    return connectDragSource(connectDropTarget(
+      <div style={{ ...style, opacity }}>
+        {child}
       </div>,
     ));
   }
